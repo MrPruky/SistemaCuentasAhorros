@@ -21,11 +21,11 @@ public class ConexionDB {
     
     //constructor
     public ConexionDB() {
-        this.host = "*********";
-        this.puerto = *********;
-        this.baseDatos = "*********";
-        this.usuario = "*********";
-        this.contraseña = "*********";
+        this.host = "";
+        this.puerto = ;
+        this.baseDatos = "";
+        this.usuario = "";
+        this.contraseña = "";
         this.conexion = null;
     }
     public ConexionDB(String host, int puerto, String baseDatos, String usuario, String contraseña) {
