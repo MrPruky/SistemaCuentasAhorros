@@ -11,6 +11,10 @@ import javax.swing.JOptionPane;
 import javax.swing.text.AbstractDocument;
 import Utilidades.LongitudDocumentFilter;
 import Utilidades.ValidadorCampos;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import javax.swing.JLabel;
+import java.text.DecimalFormat;
 /**
  *
  * @author Lenovo
@@ -20,6 +24,10 @@ public class frmCuentas extends javax.swing.JDialog {
     /**
      * Creates new form frmCuentas
      */
+
+    private int idCuentaEnEdicion = 0; // 0 significa modo creación, >0 significa modo edición
+    private Cuenta cuentaActual; // Para almacenar la cuenta que se está editando
+
     public frmCuentas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -28,6 +36,9 @@ public class frmCuentas extends javax.swing.JDialog {
         ((AbstractDocument) this.txtApellidoPaterno.getDocument()).setDocumentFilter(new SoloLetrasDocumentFilter(20));
         ((AbstractDocument) this.txtApellidoMaterno.getDocument()).setDocumentFilter(new SoloLetrasDocumentFilter(20));
         ((AbstractDocument) this.txtCorreo.getDocument()).setDocumentFilter(new LongitudDocumentFilter(100));
+
+        setLocationRelativeTo(null); // Centra la ventana
+        limpiarCampos(); // Inicializa el formulario en modo creación
     }
 
     /**
@@ -52,6 +63,7 @@ public class frmCuentas extends javax.swing.JDialog {
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        lblIdCuenta = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cuentas de ahorro");
@@ -92,17 +104,13 @@ public class frmCuentas extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Lenovo\\Documents\\GitHub\\SistemaCuentasAhorros\\src\\Imagenes\\pen-nib-solid (1).png")); // NOI18N
+        lblIdCuenta.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(74, 74, 74)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtCorreo)
@@ -116,23 +124,33 @@ public class frmCuentas extends javax.swing.JDialog {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
                             .addComponent(jLabel3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(btnGuardar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnCancelar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(68, 68, 68)
+                                .addComponent(jLabel1))
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(btnGuardar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCancelar)
-                        .addGap(0, 40, Short.MAX_VALUE)))
+                        .addGap(0, 40, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblIdCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblIdCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(37, 37, 37)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -170,34 +188,123 @@ public class frmCuentas extends javax.swing.JDialog {
     }//GEN-LAST:event_txtApellidoPaternoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
-                //definir un objeto de la clase cuenta
-        Cuenta cliente=new Cuenta();
-        //proporcionar los datos de cada atributos
-        cliente.setNombre(this.txtNombre.getText());
-        cliente.setApellidoPaterno(this.txtApellidoPaterno.getText());
-        cliente.setApellidoMaterno(this.txtApellidoMaterno.getText());
-        cliente.setCapital(Double.parseDouble(this.txtCapital.getText()));
-        cliente.setCorreo(this.txtCorreo.getText());
-        //guaradar el registro ebn la tabla de la BD
-        if (cliente.insertar()){
-            JOptionPane.showMessageDialog(null, "Cuenta registrada con exito !!!");
+        // Validaciones básicas de campos
+        if (txtNombre.getText().trim().isEmpty() || txtApellidoPaterno.getText().trim().isEmpty() ||
+            txtCapital.getText().trim().isEmpty() || txtCorreo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios (Nombre, Apellido Paterno, Capital, Correo).", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        else
-        {
-            JOptionPane.showMessageDialog(null, "Error al guardar la cuenta");
-        }
-        //validar correo
-        if(!ValidadorCampos.esEmailValido(this.txtCorreo.getText())){
-            JOptionPane.showMessageDialog(null, "Correo invalido", "Registro de cuentas", JOptionPane.ERROR_MESSAGE);
+
+        // Validación de correo usando tu clase ValidadorCampos
+        if(!ValidadorCampos.esEmailValido(this.txtCorreo.getText().trim())){
+            JOptionPane.showMessageDialog(this, "Correo inválido. Por favor, ingrese un correo válido.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
             this.txtCorreo.requestFocus();
             this.txtCorreo.selectAll();
+            return;
+        }
+
+        double capital;
+        try {
+            capital = Double.parseDouble(txtCapital.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El capital debe ser un número válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Cuenta cuentaAProcesar;
+        if (idCuentaEnEdicion > 0) { // Estamos en modo edición
+            cuentaAProcesar = this.cuentaActual; // Usamos el objeto que ya cargamos para edición
+            cuentaAProcesar.setIdCuenta(idCuentaEnEdicion); // Nos aseguramos de que el ID esté seteado
+        } else { // Estamos en modo creación
+            cuentaAProcesar = new Cuenta();
+        }
+
+        // Asignar los valores de los campos de la UI al objeto Cuenta
+        cuentaAProcesar.setNombre(txtNombre.getText().trim());
+        cuentaAProcesar.setApellidoPaterno(txtApellidoPaterno.getText().trim());
+        cuentaAProcesar.setApellidoMaterno(txtApellidoMaterno.getText().trim()); // Puede ser vacío
+        cuentaAProcesar.setCapital(capital);
+        cuentaAProcesar.setCorreo(txtCorreo.getText().trim());
+
+        boolean operacionExitosa;
+        if (idCuentaEnEdicion > 0) { // Es una actualización (editar)
+            operacionExitosa = cuentaAProcesar.actualizar();
+            if (operacionExitosa) {
+                JOptionPane.showMessageDialog(this, "Cuenta actualizada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar la cuenta.", "Error de Actualización", JOptionPane.ERROR_MESSAGE);
+            }
+        } else { // Es una inserción (crear)
+            operacionExitosa = cuentaAProcesar.insertar();
+            if (operacionExitosa) {
+                JOptionPane.showMessageDialog(this, "Cuenta creada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos(); // Opcional: limpiar campos para otra inserción
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al crear la cuenta.", "Error de Inserción", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        if (operacionExitosa) {
+            this.dispose(); // Cierra el formulario si la operación fue exitosa
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+      private void limpiarCampos() {
+        if (lblIdCuenta != null) { // Asegúrate de que lblIdCuenta exista
+            lblIdCuenta.setText("ID: Nuevo Registro");
+        }
+        txtNombre.setText("");
+        txtApellidoPaterno.setText("");
+        txtApellidoMaterno.setText("");
+        txtCapital.setText("");
+        txtCorreo.setText("");
+        // Si tienes un JDateChooser para la fecha de registro:
+        // if (dateChooserFechaRegistro != null) {
+        //     dateChooserFechaRegistro.setDate(null);
+        // }
+        idCuentaEnEdicion = 0; // Restablecer a 0 para indicar modo creación
+        btnGuardar.setText("Guardar"); // Cambiar el texto del botón a "Guardar"
+        this.setTitle("Crear Nueva Cuenta"); // Cambiar el título de la ventana
+    }
+
+    // *** NUEVO MÉTODO: Carga los datos de una cuenta existente para edición ***
+    public void cargarDatosCuentaParaEdicion(Cuenta cuenta) {
+       this.cuentaActual = cuenta;
+        this.idCuentaEnEdicion = cuenta.getIdCuenta();
+
+        if (lblIdCuenta != null) {
+            lblIdCuenta.setText("ID: " + cuenta.getIdCuenta());
+        }
+        txtNombre.setText(cuenta.getNombre());
+        txtApellidoPaterno.setText(cuenta.getApellidoPaterno());
+        txtApellidoMaterno.setText(cuenta.getApellidoMaterno());
+
+        // Formatear el capital para evitar notación científica
+        DecimalFormat df = new DecimalFormat("#.00");
+        String capitalFormateado;
+        if (cuenta.getCapital() == Math.floor(cuenta.getCapital())) {
+            capitalFormateado = String.format("%.0f", cuenta.getCapital());
+        } else {
+            capitalFormateado = df.format(cuenta.getCapital());
+        }
+
+        txtCapital.setText(capitalFormateado);
+
+        // *** ¡NUEVA LÍNEA AQUÍ para hacerlo de solo lectura! ***
+        txtCapital.setEditable(false); 
+        // ******************************************************
+
+        txtCorreo.setText(cuenta.getCorreo());
+
+        // ... (resto del código para JDateChooser si lo tienes) ...
+
+        btnGuardar.setText("Actualizar");
+        this.setTitle("Editar Cuenta - ID: " + cuenta.getIdCuenta());
+    }
 
     /**
      * @param args the command line arguments
@@ -250,6 +357,7 @@ public class frmCuentas extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel lblIdCuenta;
     private javax.swing.JTextField txtApellidoMaterno;
     private javax.swing.JTextField txtApellidoPaterno;
     private javax.swing.JTextField txtCapital;

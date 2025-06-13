@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date; 
+import java.text.SimpleDateFormat; 
+import java.util.ArrayList;
+import java.util.List; 
 
 
 /**
@@ -204,37 +208,106 @@ public class Cuenta extends ConexionDB {
         }
         return encontrado;
     }
-     public DefaultTableModel listadoGeneral(){
-        String []columnas={"ID Cuenta","Nombre","Ap Paterno", "Ap Materno","Capita","Email","Fecha Registro"};
-        DefaultTableModel modelo=new DefaultTableModel(columnas,0);
-        String sql="SELECT * FROM cuentas";
-        Statement stmt=null;
-        ResultSet rs=null;
-        try{ 
-           super.conectar();
-             stmt=this.conexion.createStatement();
-             rs=stmt.executeQuery(sql);
-             while(rs.next()){
-                 Object [] fila={
+    public DefaultTableModel listadoCuentas(Integer idCuenta, Date fechaDesde, Date fechaHasta){
+        String []columnas={"ID", "Nombre", "Apellido Paterno", "Apellido Materno", "Email", "Capital", "Fecha Registro"};
+        DefaultTableModel modelo=new DefaultTableModel(columnas,0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               return false;
+            }
+        };
+
+        StringBuilder sqlBuilder = new StringBuilder("SELECT id_cuenta, nombre, apellido_paterno, apellido_materno, email, capital, fecha_registro FROM cuentas");
+        List<Object> parametros = new ArrayList<>();
+        boolean firstCondition = true; // Para manejar el primer WHERE/AND
+
+        // No necesitamos SimpleDateFormat aquí para los parámetros,
+        // ya que pasaremos java.sql.Date directamente.
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Eliminar esta línea
+
+        // Añadir filtro por ID
+        if (idCuenta != null && idCuenta > 0) {
+            if (firstCondition) {
+                sqlBuilder.append(" WHERE");
+                firstCondition = false;
+            } else {
+                sqlBuilder.append(" AND");
+            }
+            sqlBuilder.append(" id_cuenta = ?");
+            parametros.add(idCuenta);
+        }
+
+        // Añadir filtro por fecha de inicio
+        if (fechaDesde != null) {
+            if (firstCondition) {
+                sqlBuilder.append(" WHERE");
+                firstCondition = false;
+            } else {
+                sqlBuilder.append(" AND");
+            }
+            // Importante: Castear java.util.Date a java.sql.Date
+            sqlBuilder.append(" fecha_registro >= ?");
+            parametros.add(new java.sql.Date(fechaDesde.getTime()));
+        }
+
+        // Añadir filtro por fecha de fin
+        if (fechaHasta != null) {
+            if (firstCondition) {
+                sqlBuilder.append(" WHERE");
+                firstCondition = false;
+            } else {
+                sqlBuilder.append(" AND");
+            }
+            // Importante: Castear java.util.Date a java.sql.Date
+            sqlBuilder.append(" fecha_registro <= ?");
+            parametros.add(new java.sql.Date(fechaHasta.getTime()));
+        }
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            super.conectar();
+            pstmt = this.conexion.prepareStatement(sqlBuilder.toString());
+
+            // Asignar los parámetros dinámicamente
+            for (int i = 0; i < parametros.size(); i++) {
+                Object param = parametros.get(i);
+                if (param instanceof Integer) {
+                    pstmt.setInt(i + 1, (Integer) param);
+                } else if (param instanceof java.sql.Date) { // ¡Cambiado a java.sql.Date!
+                    pstmt.setDate(i + 1, (java.sql.Date) param); // Usar setDate
+                }
+                // Si tu columna en la DB es TIMESTAMP (con hora), deberías usar setTimestamp:
+                // else if (param instanceof java.sql.Timestamp) {
+                //     pstmt.setTimestamp(i + 1, (java.sql.Timestamp) param);
+                // }
+                // Agrega más 'else if' si tienes otros tipos de parámetros
+            }
+
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                Object [] fila={
                    rs.getInt("id_cuenta"),
                    rs.getString("nombre"),
                    rs.getString("apellido_paterno"),
                    rs.getString("apellido_materno"),
-                   rs.getDouble("capital"),
                    rs.getString("email"),
-                   rs.getString("fecha_registro")
-                 };
-                 modelo.addRow(fila);
-             }
+                   rs.getDouble("capital"),
+                   rs.getString("fecha_registro"), // Puedes seguir obteniéndolo como String si así lo manejas en la tabla
+                };
+                modelo.addRow(fila);
+            }
         }catch(SQLException e){
-            System.out.println("Error al consultar" + e.getMessage());
+            System.out.println("Error al consultar listado de cuentas: " + e.getMessage());
+            e.printStackTrace(); // Agrega esto para ver el stack trace completo y depurar mejor
         }finally {
             try {
                 if(rs!=null) rs.close();
-                if(stmt!=null) stmt.close();
+                if(pstmt!=null) pstmt.close();
                 if(this.conexion!=null)super.desconectar();
             }catch (SQLException e){
-                System.out.println("Error al cerrar los recursos:" + e.getMessage());
+                System.out.println("Error al cerrar los recursos: " + e.getMessage());
             }
         }
         return modelo;
