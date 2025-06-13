@@ -164,8 +164,24 @@ public class frmCuentas extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
+                //definir un objeto de la clase cuenta
+        Cuenta cliente=new Cuenta();
+        //proporcionar los datos de cada atributos
+        cliente.setNombre(this.txtNombre.getText());
+        cliente.setApellidoPaterno(this.txtApellidoPaterno.getText());
+        cliente.setApellidoMaterno(this.txtApellidoMaterno.getText());
+        cliente.setCapital(Double.parseDouble(this.txtCapital.getText()));
+        cliente.setCorreo(this.txtCorreo.getText());
+        //guaradar el registro ebn la tabla de la BD
+        if (cliente.insertar()){
+            JOptionPane.showMessageDialog(null, "Cuenta registrada con exito !!!");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Error al guardar la cuenta");
+        }
         //validar correo
-        if(ValidadorCampos.esEmailValido(this.txtCorreo.getText())){
+        if(!ValidadorCampos.esEmailValido(this.txtCorreo.getText())){
             JOptionPane.showMessageDialog(null, "Correo invalido", "Registro de cuentas", JOptionPane.ERROR_MESSAGE);
             this.txtCorreo.requestFocus();
             this.txtCorreo.selectAll();

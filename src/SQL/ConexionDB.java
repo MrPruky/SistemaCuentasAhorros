@@ -21,11 +21,11 @@ public class ConexionDB {
     
     //constructor
     public ConexionDB() {
-        this.host = "";
-        this.puerto = ;
-        this.baseDatos = "";
-        this.usuario = "";
-        this.contraseña = "";
+        this.host = "pg-2a484bb5-info-f47d.b.aivencloud.com";
+        this.puerto = 17547;
+        this.baseDatos = "CuentasAhorro";
+        this.usuario = "avnadmin";
+        this.contraseña = "AVNS_2RsbKJpXNi2dk7FGpFf";
         this.conexion = null;
     }
     public ConexionDB(String host, int puerto, String baseDatos, String usuario, String contraseña) {

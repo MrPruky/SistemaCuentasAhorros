@@ -1,5 +1,3 @@
-
-=======
 # === Carpetas de NetBeans ===
 nbproject/private/
 
@@ -25,3 +23,6 @@ desktop.ini
 
 # === Archivos de NetBeans generados automáticamente ===
 *.orig
+
+src\SQL\ConexionDBPlantilla.java
+src\SQL\ConexionDB.java
