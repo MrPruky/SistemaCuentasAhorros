@@ -176,6 +176,38 @@ public class Cuenta extends ConexionDB {
             }
         }
     }
+    
+    public List<Cuenta> obtenerTodasLasCuentas() throws SQLException {
+        List<Cuenta> cuentas = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            super.conectar();
+            String sql = "SELECT id_cuenta, nombre, apellido_paterno FROM cuentas ORDER BY nombre, apellido_paterno"; // Solo necesitas estas columnas para el ComboBox
+            pstmt = this.conexion.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Cuenta c = new Cuenta();
+                c.setIdCuenta(rs.getInt("id_cuenta"));
+                c.setNombre(rs.getString("nombre"));
+                c.setApellidoPaterno(rs.getString("apellido_paterno"));
+                // No necesitas setear todos los demás atributos si solo usarás ID y nombre/apellido en el ComboBox
+                cuentas.add(c);
+            }
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (this.conexion != null) super.desconectar();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar recursos en obtenerTodasLasCuentas: " + e.getMessage());
+                // No re-lanzar aquí, ya que el método principal ya lanza SQLException
+            }
+        }
+        return cuentas;
+    }
+    
     public boolean buscar(){
         PreparedStatement stmt=null;
         ResultSet rs=null;

@@ -1,22 +1,81 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package UI;
-
+import SQL.Cuenta; // Asegúrate de que tu clase Cuenta esté en el paquete SQL
+import SQL.Movimiento; // Asegúrate de que tu clase Movimiento esté en el paquete SQL
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import java.text.DecimalFormat; // Importación para formatear números
+import java.util.logging.Level; // Importación para el logger
 /**
  *
- * @author Lenovo
+ * @author diego
  */
-public class frmMovimientos extends javax.swing.JDialog {
+public class frmMovimientos extends javax.swing.JFrame {
+    
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmMovimientos.class.getName());
+    private static final DecimalFormat currencyFormat = new DecimalFormat("$#,##0.00");
 
     /**
      * Creates new form frmMovimientos
      */
-    public frmMovimientos(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+    public frmMovimientos() {
+        initComponents(); // Inicializa los componentes de la GUI (generado por NetBeans)
+
+        // --- INICIO DE CÓDIGO AÑADIDO MANUALMENTE EN EL CONSTRUCTOR ---
+
+        // Es una buena práctica establecer DISPOSE_ON_CLOSE en el constructor
+        // para que cerrar esta ventana no cierre toda la aplicación,
+        // a menos que sea la ventana principal.
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
+
+        cargarCuentasEnComboBox();    // Carga las cuentas en cmbCuenta
+        cargarTiposMovimiento();     // Carga los tipos de movimiento en cmbTipoVariable
+
+        // Configurar el campo txtImporte
+        txtImporte.setText(currencyFormat.format(0.00)); // Establecer el texto inicial con formato
+        txtImporte.setHorizontalAlignment(javax.swing.JTextField.RIGHT); // Alineación a la derecha
+
+        // Añadir FocusListeners para el formato de importe
+        txtImporte.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtImporteFocusGained(evt);
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtImporteFocusLost(evt);
+            }
+        });
+
+        // Añadir ActionListener para el botón "Guardar"
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enviarMovimiento(); // Llama al método para guardar el movimiento
+            }
+        });
+
+        // Añadir ActionListener para el botón "Cancelar"
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cierra la ventana actual
+            }
+        });
+
+        // Centrar la ventana en la pantalla
+        this.setLocationRelativeTo(null);
+        // --- FIN DE CÓDIGO AÑADIDO MANUALMENTE EN EL CONSTRUCTOR ---
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,9 +86,15 @@ public class frmMovimientos extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cmbCuenta = new javax.swing.JComboBox<>();
+        cmbTipoVariable = new javax.swing.JComboBox<>();
+        txtImporte = new javax.swing.JTextField();
+        btnGuardar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+<<<<<<< Updated upstream
         jLabel4 = new javax.swing.JLabel();
         txtCuenta = new javax.swing.JTextField();
         txtTipo = new javax.swing.JTextField();
@@ -39,13 +104,26 @@ public class frmMovimientos extends javax.swing.JDialog {
         btnCancelar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+=======
+>>>>>>> Stashed changes
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        cmbCuenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cmbTipoVariable.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        txtImporte.setText("$");
+
+        btnGuardar.setText("Guardar");
+
+        btnCancelar.setText("Cancelar");
 
         jLabel1.setText("Cuenta");
 
-        jLabel2.setText("Tipo");
+        jLabel2.setText("TipoVariable");
 
+<<<<<<< Updated upstream
         jLabel3.setText("Fecha");
 
         jLabel4.setText("Importe");
@@ -57,12 +135,16 @@ public class frmMovimientos extends javax.swing.JDialog {
         jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\Lenovo\\Documents\\GitHub\\SistemaCuentasAhorros\\src\\Imagenes\\minus-solid (1).png")); // NOI18N
 
         jLabel6.setIcon(new javax.swing.ImageIcon("C:\\Users\\Lenovo\\Documents\\GitHub\\SistemaCuentasAhorros\\src\\Imagenes\\plus-solid (1).png")); // NOI18N
+=======
+        jLabel3.setText("Importe");
+>>>>>>> Stashed changes
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+<<<<<<< Updated upstream
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -118,6 +200,43 @@ public class frmMovimientos extends javax.swing.JDialog {
                     .addComponent(btnGuardar)
                     .addComponent(btnCancelar))
                 .addGap(22, 22, 22))
+=======
+                .addGap(58, 58, 58)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(btnGuardar)
+                        .addGap(74, 74, 74)
+                        .addComponent(btnCancelar))
+                    .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbTipoVariable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(104, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbCuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(4, 4, 4)
+                .addComponent(cmbTipoVariable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addGap(3, 3, 3)
+                .addComponent(txtImporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar)
+                    .addComponent(btnCancelar))
+                .addGap(36, 36, 36))
+>>>>>>> Stashed changes
         );
 
         pack();
@@ -139,35 +258,176 @@ public class frmMovimientos extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmMovimientos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmMovimientos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmMovimientos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmMovimientos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                frmMovimientos dialog = new frmMovimientos(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> new frmMovimientos().setVisible(true));
+    }
+    
+    // --- MÉTODOS AÑADIDOS PARA FUNCIONALIDAD ---
+
+    // Manejo del foco para el campo de importe
+    private void txtImporteFocusGained(java.awt.event.FocusEvent evt) {                                        
+        // Cuando el campo de texto gana foco, se elimina el formato para facilitar la edición
+        try {
+            double value = currencyFormat.parse(txtImporte.getText()).doubleValue();
+            txtImporte.setText(String.valueOf(value));
+        } catch (java.text.ParseException e) {
+            // Si no se puede parsear (ej. solo "$"), borrar el texto
+            txtImporte.setText(""); 
+            logger.log(Level.WARNING, "Error al parsear importe en focusGained: {0}", e.getMessage());
+        }
+    }                                       
+
+    private void txtImporteFocusLost(java.awt.event.FocusEvent evt) {                                      
+        // Cuando el campo de texto pierde foco, se vuelve a formatear a moneda
+        try {
+            String text = txtImporte.getText().trim();
+            if (text.isEmpty()) {
+                txtImporte.setText(currencyFormat.format(0.00));
+            } else {
+                double value = Double.parseDouble(text);
+                txtImporte.setText(currencyFormat.format(value));
             }
-        });
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un importe numérico válido (ej. 100.50).", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            txtImporte.setText(currencyFormat.format(0.00)); // Restablecer al valor por defecto
+            logger.log(Level.WARNING, "Error al parsear importe en focusLost: {0}", e.getMessage());
+        }
+    }                                     
+
+    /**
+     * Carga las cuentas disponibles desde la base de datos y las añade a cmbCuenta.
+     */
+    private void cargarCuentasEnComboBox() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        SQL.Cuenta cuentaDAO = new SQL.Cuenta(); // Usar nombre completo del paquete para evitar ambigüedades
+
+        try {
+            List<SQL.Cuenta> cuentas = cuentaDAO.obtenerTodasLasCuentas(); // Usar nombre completo del paquete
+            if (cuentas != null && !cuentas.isEmpty()) {
+                for (SQL.Cuenta c : cuentas) { // Usar nombre completo del paquete
+                    // Formato: "ID - Nombre ApellidoPaterno"
+                    model.addElement(c.getIdCuenta() + " - " + c.getNombre() + " " + c.getApellidoPaterno());
+                }
+            } else {
+                model.addElement("No hay cuentas disponibles");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar cuentas: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.SEVERE, "Error al cargar cuentas en ComboBox", e);
+            model.addElement("Error al cargar cuentas"); // Muestra el error en el ComboBox
+        }
+
+        cmbCuenta.setModel(model); // Asigna el modelo a TU JComboBox de cuentas (cmbCuenta)
+    }
+
+    /**
+     * Carga los tipos de movimiento (Depósito, Retiro) en cmbTipoVariable (tu nuevo nombre).
+     * Si en el futuro estos tipos vinieran de una DB, se modificaría este método.
+     */
+     private void cargarTiposMovimiento() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("Seleccione un tipo"); // Opcional: añade una opción por defecto
+        model.addElement("Depósito");
+        model.addElement("Retiro");
+        cmbTipoVariable.setModel(model); // Asigna el modelo a TU JComboBox de tipo de movimiento (cmbTipoVariable)
+    }
+
+    /**
+     * Maneja el evento de envío del movimiento, validando los datos e insertándolos en la DB.
+     */
+    private void enviarMovimiento() {
+        // 1. Obtener el ID de la cuenta seleccionada de cmbCuenta
+        String selectedAccountString = (String) cmbCuenta.getSelectedItem();
+        if (selectedAccountString == null || selectedAccountString.startsWith("No hay") || selectedAccountString.startsWith("Error") || selectedAccountString.equals("Seleccione una cuenta")) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una cuenta válida.", "Error de Selección", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int idCuenta;
+        try {
+            // Extrae el ID (la parte antes de " - ")
+            idCuenta = Integer.parseInt(selectedAccountString.split(" - ")[0]);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Error al obtener el ID de la cuenta. Formato inesperado.", "Error Interno", JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.SEVERE, "Error al parsear ID de cuenta de ComboBox", ex);
+            return;
+        }
+
+        // 2. Obtener el tipo de movimiento seleccionado de cmbTipoVariable y mapearlo a 'D' o 'R'
+        String tipoSeleccionado = (String) cmbTipoVariable.getSelectedItem();
+        String tipoParaDB; // Esta variable contendrá 'D' o 'R' para la base de datos
+
+        if (tipoSeleccionado == null || tipoSeleccionado.equals("Seleccione un tipo")) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un tipo de movimiento.", "Error de Selección", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if ("Depósito".equals(tipoSeleccionado)) {
+            tipoParaDB = "D"; // Mapea "Depósito" a 'D' para la DB
+        } else if ("Retiro".equals(tipoSeleccionado)) {
+            tipoParaDB = "R"; // Mapea "Retiro" a 'R' para la DB
+        } else {
+            // Esto no debería ocurrir si el ComboBox está bien inicializado
+            JOptionPane.showMessageDialog(this, "Tipo de movimiento no reconocido.", "Error Interno", JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.WARNING, "Tipo de movimiento inesperado: " + tipoSeleccionado);
+            return;
+        }
+
+        // 3. Obtener y validar el importe
+        double importe;
+        try {
+            // Parsear el texto del campo, eliminando el formato de moneda si está presente
+            importe = currencyFormat.parse(txtImporte.getText().trim()).doubleValue();
+
+            if (importe <= 0) {
+                JOptionPane.showMessageDialog(this, "El importe debe ser mayor que cero.", "Importe Inválido", JOptionPane.WARNING_MESSAGE);
+                txtImporte.requestFocus();
+                return;
+            }
+        } catch (java.text.ParseException | NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un importe numérico válido (ej. 100.50).", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            txtImporte.requestFocus();
+            logger.log(Level.WARNING, "Error al parsear importe: " + ex.getMessage(), ex);
+            return;
+        }
+
+        // 4. Crear el objeto Movimiento
+        SQL.Movimiento nuevoMovimiento = new SQL.Movimiento();
+        nuevoMovimiento.setIdCuenta(idCuenta);
+        nuevoMovimiento.setTipoMovimiento(tipoParaDB); // ¡Aquí se usa 'D' o 'R' según el mapeo!
+        nuevoMovimiento.setImporte(importe);
+        nuevoMovimiento.setFechaMovimiento(new Date()); // Establecer la fecha/hora actual
+
+        // 5. Insertar el movimiento en la base de datos
+        if (nuevoMovimiento.insertar()) {
+            JOptionPane.showMessageDialog(this, "Movimiento registrado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar el movimiento. Verifique la consola para más detalles.", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Limpia y restablece los campos del formulario a su estado inicial.
+     */
+    private void limpiarCampos() {
+        // Restablecer cmbCuenta al primer elemento válido (si existe)
+        if (cmbCuenta.getItemCount() > 0 && !cmbCuenta.getSelectedItem().toString().startsWith("No hay") && !cmbCuenta.getSelectedItem().toString().startsWith("Error")) {
+            cmbCuenta.setSelectedIndex(0); 
+        }
+        // Restablecer cmbTipoVariable al primer elemento
+        if (cmbTipoVariable.getItemCount() > 0) {
+            cmbTipoVariable.setSelectedIndex(0);
+        }
+        txtImporte.setText(currencyFormat.format(0.00)); // Restablecer el importe con formato
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardar;
+<<<<<<< Updated upstream
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -178,5 +438,13 @@ public class frmMovimientos extends javax.swing.JDialog {
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtImporte;
     private javax.swing.JTextField txtTipo;
+=======
+    private javax.swing.JComboBox<String> cmbCuenta;
+    private javax.swing.JComboBox<String> cmbTipoVariable;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField txtImporte;
+>>>>>>> Stashed changes
     // End of variables declaration//GEN-END:variables
 }
